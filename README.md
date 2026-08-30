@@ -1,23 +1,29 @@
 # Adaptive Misinformation Containment Using Competing Information Cascades
 
-A C++ graph-based simulation that models misinformation propagation and compares fact-checking intervention strategies under limited moderator resources.
-
 ## Project Overview
 
-This project models a social network as a graph, where users are represented as nodes and their connections as edges. The simulation models the spread of misinformation and fact-check information over successive time steps.
+This project is a C++-based command-line simulation that models the
+propagation of misinformation and fact-check information in a social
+network represented as a graph.
 
-A limited moderator budget is used to perform fact-checking interventions. The project compares three intervention strategies:
+The project investigates how limited fact-checking resources can be
+allocated effectively by dynamically selecting intervention users based
+on the current state of the network.
 
-- Random Selection
-- Highest-Degree Selection
-- Marginal-Gain-Based Selection
+## Intervention Strategies
 
-The marginal-gain strategy evaluates the expected reduction in misinformation for possible interventions based on the current state of the network and recalculates the decision after each intervention.
+The system compares three strategies:
+
+1. Random Selection
+2. Highest-Degree Selection
+3. Marginal-Gain-Based Selection
+
+The marginal-gain strategy recalculates the expected benefit of each
+possible intervention after the network state changes.
 
 ## Technologies
 
 - C++
-- C++ Standard Library
 - Graphs and Adjacency Lists
 - BFS
 - Priority Queues
@@ -25,10 +31,25 @@ The marginal-gain strategy evaluates the expected reduction in misinformation fo
 - Object-Oriented Programming
 - GitHub
 
-## Project Goals
+## Project Structure
 
-- Model misinformation propagation in a social network.
-- Simulate fact-checking interventions under a limited budget.
-- Dynamically select interventions based on marginal gain.
-- Compare intervention strategies under the same conditions.
-- Analyse misinformation spread, misinformation prevented, fact-check reach, and runtime.
+- `include/` — Header files
+- `src/` — C++ implementation files
+- `tests/` — Test cases
+- `data/` — Simulation input data
+- `results/` — Simulation results
+- `docs/` — Project documentation
+
+## Team Development
+
+The project is developed collaboratively using GitHub with feature
+branches and pull requests.
+
+## Expected Results
+
+The simulation will compare the strategies based on:
+
+- Misinformation reach
+- Misinformation prevented
+- Fact-check reach
+- Execution time
