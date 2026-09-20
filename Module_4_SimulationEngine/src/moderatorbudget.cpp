@@ -1,6 +1,6 @@
-#include "ModeratorBudget.h"
+#include "moderatorbudget.h"
 
-ModeratorBudget::ModeratorBudget(int budget)
+moderatorbudget::moderatorbudget(int budget)
 {
     if (budget < 0)
     {
@@ -11,12 +11,12 @@ ModeratorBudget::ModeratorBudget(int budget)
     remainingBudget = budget;
 }
 
-bool ModeratorBudget::canIntervene()
+bool moderatorbudget::canIntervene()
 {
     return remainingBudget > 0;
 }
 
-bool ModeratorBudget::useIntervention()
+bool moderatorbudget::useIntervention()
 {
     if (remainingBudget <= 0)
     {
