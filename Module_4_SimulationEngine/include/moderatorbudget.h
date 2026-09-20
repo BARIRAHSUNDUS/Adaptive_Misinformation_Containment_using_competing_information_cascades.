@@ -1,11 +1,11 @@
-class ModeratorBudget
+class moderatorbudget
 {
 private:
     int totalBudget;
     int remainingBudget;
 
 public:
-    ModeratorBudget(int budget);
+    moderatorbudget(int budget);
 
     bool canIntervene();
     bool useIntervention();
