@@ -1,5 +1,5 @@
 #include <vector>
-#include "moderatorbudget.h"
+#include "ModeratorBudget.h"
 #include "CascadeModel.h"
 
 using namespace std;
@@ -7,29 +7,25 @@ using namespace std;
 class SimulationEngine
 {
 private:
-    int maxTicks;
-    int warmUpTicks;
-
+    int mticks;
+    int warmup;
+    
     ModeratorBudget budget;
+    CascadeModel* model;
 
-    CascadeModel* cascade;
+    vector<int> intervention;
 
-    vector<int> interventionTicks;
-
-    void createInterventionSchedule();
-
-    bool isInterventionTick(int tick);
+    void makeSchedule();
+    bool checkTick(int t);
 
 public:
-
     SimulationEngine(
-        int maxTicks,
-        int warmUpTicks,
+        int mticks,
+        int warmup,
         int budget,
-        CascadeModel* cascadeModel
+        CascadeModel* c
     );
 
-    void showInterventionSchedule();
-
+    void showSchedule();
     void run();
 };
