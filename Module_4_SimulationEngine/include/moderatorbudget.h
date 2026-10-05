@@ -1,15 +1,15 @@
-class moderatorbudget
+class ModeratorBudget
 {
 private:
-    int totalBudget;
-    int remainingBudget;
+    int Tb;
+    int Rb;
 
 public:
-    moderatorbudget(int budget);
+    ModeratorBudget(int b);
 
     bool canIntervene();
     bool useIntervention();
 
-    int getTotalBudget();
-    int getRemainingBudget();
+    int getTb();
+    int getRb();
 };
