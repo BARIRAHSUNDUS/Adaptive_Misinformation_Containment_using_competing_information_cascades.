@@ -1,0 +1,14 @@
+#ifndef MODERATORBUDGET_H
+#define MODERATORBUDGET_H
+class ModeratorBudget {
+private:
+    int Tb;   // total budget
+    int Rb;   // remaining budget
+public:
+    explicit ModeratorBudget(int budget);
+    bool canIntervene() const;
+    bool useIntervention();     // false if nothing left
+    int  getTb() const;
+    int  getRb() const;
+};
+#endif
