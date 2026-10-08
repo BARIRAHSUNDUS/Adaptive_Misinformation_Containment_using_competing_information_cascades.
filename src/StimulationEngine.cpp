@@ -30,15 +30,12 @@ SimulationResult SimulationEngine::run(int source, uint64_t runSeed, std::ostrea
     SimulationResult r;
     CascadeModel model(graph_, cfg_.misProb, cfg_.factProb);
     ModeratorBudget budget(cfg_.budget);
-    // The strategy gets its own seed, different from the real run's seed, so its "what if" trials
-    // never reuse the random numbers of the real simulation.
     const uint64_t strategySeed = runSeed + 1000000007ULL;
     if (strategy_) strategy_->reset(strategySeed);
     model.seedMisinformation(source);
     if (log) *log << "Tick 0: source = User " << source << " (initialised)\n";
 
     size_t next = 0;
-    // The simulation always runs exactly T ticks, even if nothing can spread any more.
     for (int t = 1; t <= cfg_.ticks; t++) {
         TickReport rep = model.step(runSeed);
         r.terminationTick = t;
