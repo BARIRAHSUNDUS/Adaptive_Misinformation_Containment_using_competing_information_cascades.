@@ -143,4 +143,3 @@ if (strategy_ && next < schedule_.size() && schedule_[next] == t) {
     r.runtimeMs = std::chrono::duration<double, std::milli>(std::chrono::steady_clock::now() - t0).count();
     return r;
 }
-.
