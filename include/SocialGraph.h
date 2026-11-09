@@ -25,5 +25,9 @@ public:
     void displayGraph(std::ostream& os) const;
     // Evaluates EVERY unordered pair once: edge iff uniform[0,1) < p.
     static SocialGraph generateRandom(int n, double p, std::mt19937& rng);
+    // Barabasi-Albert (scale-free) graph: starts from a clique of m+1 users, then every new user
+    // connects to m DISTINCT existing users chosen with probability proportional to their degree,
+    // so a few hubs appear. m is clamped to n-1; m < 1 gives no edges.
+    static SocialGraph generateScaleFree(int n, int m, std::mt19937& rng);
 };
 #endif
