@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Misinformation vs Fact-Check - propagation viewer</title>
+<style>
+@@CSS@@
+</style>
+</head>
+<body>
+<header>
+  <h1>Misinformation vs Fact-Check <span class="sub">propagation viewer</span></h1>
+  <div class="meta" id="meta"></div>
+</header>
+<div id="nodata" hidden>This page needs the simulator behind it. Start it with <code>misinfo --gui</code> and open the address it prints.</div>
+<section class="setup" id="setup" hidden>
+  <h2>Set up the simulation (runs the C++ engine)</h2>
+  <div class="fields">
+    <label>Users <input id="fUsers" type="number" min="1" max="500" step="1"></label>
+    <label>Ticks <input id="fTicks" type="number" min="1" max="300" step="1"></label>
+    <label>Moderator budget <input id="fBudget" type="number" min="0" max="500" step="1"></label>
+    <label title="The moderator waits this many ticks after the rumour starts. Try 0, 2, 5: the later it starts, the more users are misinformed.">Moderator starts after tick <input id="fWarmup" type="number" min="0" max="299" step="1"></label>
+    <label>Network
+      <select id="fGraph"><option value="er">random</option><option value="ba">scale-free (with hubs)</option></select>
+    </label>
+    <label>Scenario seed <input id="fSeed" type="number" min="0" step="1"></label>
+    <label class="chk"><input id="fBench" type="checkbox" checked> Compare all strategies (benchmark, a few seconds)</label>
+    <button id="btnRun" class="primary">Run simulation</button>
+    <button id="btnNew">New random scenario</button>
+    <span id="runStatus" role="status"></span>
+  </div>
+  <p class="note">Spread, fact-check and connection probabilities are drawn at random for every scenario. The same seed always gives the same scenario.</p>
+</section>
+<div id="app" hidden>
+  <section class="controls">
+    <button id="btnReset" title="Back to tick 0">&#9198; Reset</button>
+    <button id="btnBack" title="Previous tick">&#9664; Step</button>
+    <button id="btnPlay" class="primary">&#9654; Play</button>
+    <button id="btnFwd" title="Next tick">Step &#9654;</button>
+    <input id="tickSlider" type="range" min="0" max="0" value="0" aria-label="Tick">
+    <span class="tickLabel" id="tickLabel"></span>
+    <label>Speed
+      <select id="speed">
+        <option value="0.4">slow</option>
+        <option value="0.8" selected>normal</option>
+        <option value="1.6">fast</option>
+        <option value="3.5">very fast</option>
+      </select>
+    </label>
+  </section>
+  <section class="legend">
+    <span><i class="dot" style="background:var(--neutral)"></i>Neutral (has seen nothing)</span>
+    <span><i class="dot" style="background:var(--mis)"></i>Misinformed</span>
+    <span><i class="dot" style="background:var(--fact)"></i>Fact-checked (and now spreads the correction)</span>
+    <span><i class="ring" style="border:3px solid var(--mod)"></i>Picked by the moderator</span>
+    <span><i class="ring" style="border:2px solid var(--src)"></i>Source of the rumour</span>
+    <span style="margin-left:auto">Space = play/pause, arrows = step</span>
+  </section>
+  <main class="panels" id="panels"></main>
+  <div class="delta" id="delta"></div>
+  <section class="summary">
+    <h2>This scenario: final result of every strategy</h2>
+    <table id="sumTable"></table>
+    <p class="note">This is ONE random scenario (one graph, one source, one set of probabilities), so it shows how a strategy behaves, not which one is best overall.
+       The benchmark below compares them over many scenarios.</p>
+  </section>
+  <section class="bench">
+    <h2>Benchmark: which strategy is best over many scenarios</h2>
+    <pre id="bench"></pre>
+  </section>
+</div>
+<div id="tip"></div>
+<footer>Every event you see was produced by the C++ simulator (the same engine the benchmark uses).</footer>
+
+<script>
+(function(){
+'use strict';
+@@JS@@
+})();
+</script>
+</body>
+</html>
