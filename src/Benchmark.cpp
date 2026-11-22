@@ -323,4 +323,73 @@ void runConditionStudy(const SimulationConfig& cfg, std::ostream& os) {
     os << "- Averaged over the conditions the rumour reached: nobody " << num(sumReach[0] / nCond, 1) << ", Random " << num(sumReach[1] / nCond, 1)
        << ", Highest Degree " << num(sumReach[2] / nCond, 1) << ", Marginal Gain " << num(sumReach[3] / nCond, 1) << " users.\n";
     os << "- Saving vs doing nothing: Marginal Gain " << num(100.0 * (1 - sumReach[3] / sumReach[0]), 0) << "%, Highest Degree "
-       << num(100.0 * (1 - sumReach[2] / sumReach[0]), 0) << "%, Random " << num(10)
+       << num(100.0 * (1 - sumReach[2] / sumReach[0]), 0) << "%, Random " << num(100.0 * (1 - sumReach[1] / sumReach[0]), 0) << "%.\n";
+    os << "- Marginal Gain vs Highest Degree: " << num((sumReach[2] - sumReach[3]) / nCond, 1) << " fewer users misinformed on average, but about "
+       << num(sumTime[3] / std::max(sumTime[2], 1e-9), 0) << "x slower to compute.\n\n";
+}
+
+// The project's main question: WHEN should the moderator start, and does it matter more than WHICH users are chosen?
+// For every start delay the same experiments (same graphs, sources, probabilities, seeds) are run, so the rows are comparable.
+void runTimingStudy(const SimulationConfig& cfg, const std::vector<int>& delays, std::ostream& os) {
+    SimulationConfig base = cfg;
+    // Unless the user fixed them, use a setting where the rumour really takes off, otherwise timing cannot matter.
+    const bool defaulted = base.randEdge || base.randMis || base.randFact;
+    if (base.randEdge) { base.edgeProb = 0.04; base.randEdge = false; }
+    if (base.randMis)  { base.misProb  = 0.50; base.randMis  = false; }
+    if (base.randFact) { base.factProb = 0.40; base.randFact = false; }
+
+    os << "\nTIMING STUDY: when should the moderator start?  (" << cfg.runs << " experiments per row, " << cfg.users << " users, "
+       << cfg.ticks << " ticks, budget " << cfg.budget << ")\n"
+       << "Rumour spread " << num(base.misProb) << ", fact-check spread " << num(base.factProb) << ", " << graphName(base) << " network"
+       << (defaulted ? " (fixed values chosen so that the rumour takes off)" : "") << ".\n"
+       << "Numbers = average users who ever believed the rumour. LOWER IS BETTER. Nobody fact-checks: see 'None'.\n\n"
+       << std::left << std::setw(20) << "First fact-check at" << std::right << std::setw(8) << "None" << std::setw(8) << "Random"
+       << std::setw(8) << "Degree" << std::setw(10) << "Marginal" << "   Users saved by the best\n"
+       << std::string(20 + 8 * 3 + 10 + 27, '-') << "\n";
+
+    struct Row { int delay; double reach[NS]; };
+    std::vector<Row> rows;
+    for (int d : delays) {
+        SimulationConfig c = base; c.warmup = d;
+        Experiments ex = runExperiments(c);
+        Row r; r.delay = d;
+        for (int s = 0; s < NS; s++) r.reach[s] = mean(ex.reach[s]);
+        rows.push_back(r);
+        double bestReach = std::min(r.reach[1], std::min(r.reach[2], r.reach[3]));
+        os << std::left << std::setw(20) << ("tick " + std::to_string(d + 1)) << std::right << std::fixed << std::setprecision(1)
+           << std::setw(8) << r.reach[0] << std::setw(8) << r.reach[1] << std::setw(8) << r.reach[2] << std::setw(10) << r.reach[3]
+           << "   " << r.reach[0] - bestReach << "\n";
+    }
+    if (rows.size() < 2) return;
+
+    const Row& first = rows.front(); const Row& last = rows.back();
+    os << "\nIN SHORT\n";
+    // 1) how much does each tick of delay cost?
+    int ticksSpan = last.delay - first.delay;
+    for (int s = 1; s < NS; s++)
+        os << (s == 1 ? "- Every extra tick of waiting costs about " : "") << (s > 1 ? ", " : "") << num((last.reach[s] - first.reach[s]) / std::max(ticksSpan, 1), 1)
+           << " more users (" << NAMES[s] << ")" << (s == NS - 1 ? " on average.\n" : "");
+    // 2) timing vs strategy: how big is the choice-of-strategy effect against the timing effect?
+    double strategyEffect = first.reach[1] - std::min(first.reach[2], first.reach[3]);       // best smart strategy vs Random, on time
+    double timingEffect = last.reach[3] - first.reach[3];                                    // same strategy, early vs late
+    os << "- Choosing the user well (best strategy vs Random, started at tick " << first.delay + 1 << ") changes the reach by " << num(strategyEffect, 1)
+       << " users; starting at tick " << last.delay + 1 << " instead of " << first.delay + 1 << " changes it by " << num(timingEffect, 1) << " (" << NAMES[3] << ").\n";
+    // 3) is there a delay at which a smart strategy is worse than a simple one on time?
+    for (const Row& r : rows) {
+        if (r.delay > first.delay && r.reach[3] > first.reach[2]) {
+            os << "- " << NAMES[3] << " started at tick " << r.delay + 1 << " (" << num(r.reach[3], 1) << ") is already worse than " << NAMES[2]
+               << " started at tick " << first.delay + 1 << " (" << num(first.reach[2], 1) << "): a simple strategy on time beats a clever one that is late.\n";
+            break;
+        }
+    }
+    // 4) when does the moderator become useless?
+    for (const Row& r : rows) {
+        double best = std::min(r.reach[1], std::min(r.reach[2], r.reach[3]));
+        if (first.reach[0] > 0 && (r.reach[0] - best) < 0.1 * (first.reach[0] - std::min(first.reach[1], std::min(first.reach[2], first.reach[3])))) {
+            os << "- From tick " << r.delay + 1 << " on, even the best strategy saves less than a tenth of what it saves when it starts at tick "
+               << first.delay + 1 << ": the rumour has already spread.\n";
+            break;
+        }
+    }
+    os << "\n";
+}
