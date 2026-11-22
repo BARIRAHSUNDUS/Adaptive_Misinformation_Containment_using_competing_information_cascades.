@@ -1,0 +1,6 @@
+.setup{margin:6px 20px;background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:12px 14px}
+.fields{display:flex;flex-wrap:wrap;gap:12px 16px;align-items:end}
+.fields label{display:flex;flex-direction:column;gap:3px;color:var(--muted);font-size:12.5px}
+.fields input[type=number]{width:104px;font:inherit;color:var(--text);background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:6px 8px}
+.fields label.chk{flex-direction:row;align-items:center;gap:6px;color:var(--text);font-size:14px}
+#runStatus{color:var(--muted)} #runStatus.err{color:var(--mis);font-weight:600}
