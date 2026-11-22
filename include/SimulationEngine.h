@@ -21,18 +21,31 @@ struct SimulationResult {
     std::vector<int> selectedUsers;
 };
 
+// What the moderator did at one intervention (for the GUI).
+struct InterventionTrace {
+    int user = -1;
+    int candidates = 0;                                // how many users were eligible
+    std::vector<std::pair<int, double>> top;           // best-scored candidates (up to 5), best first
+};
+// Everything that happened in one tick. ticks[0] = initialisation (the source), ticks[t] = round t.
+struct TickTrace {
+    std::vector<Transmission> misinformed, corrected;  // propagation of this round
+    std::vector<InterventionTrace> interventions;      // moderator actions AFTER the propagation
+    bool skipped = false;                              // an intervention was due but could no longer help (rumour over, or last tick)
+};
+struct RunTrace {
+    int source = -1;
+    std::vector<TickTrace> ticks;
+};
+
 class SimulationEngine {
     const SocialGraph& graph_;
     SimulationConfig cfg_;
     InterventionStrategy* strategy_;     // nullptr = no-intervention baseline
-    std::vector<int> schedule_;
 public:
     SimulationEngine(const SocialGraph& g, const SimulationConfig& cfg, InterventionStrategy* s);
     // Tick 0 = initialisation; ticks 1..T = propagation rounds. Interventions happen AFTER
     // the propagation of their tick; the fact-check then spreads from the next tick on.
-    SimulationResult run(int source, uint64_t runSeed, std::ostream* log = nullptr);
-    const std::vector<int>& schedule() const { return schedule_; }
-    // t_i = warmup + 1 + floor((i-1)*(T-warmup)/b), duplicates removed, all <= T.
-    static std::vector<int> makeSchedule(int totalTicks, int warmup, int budget);
+    SimulationResult run(int source, uint64_t runSeed, std::ostream* log = nullptr, RunTrace* trace = nullptr);
 };
 #endif
