@@ -1,0 +1,11 @@
+.panels{display:grid;grid-template-columns:repeat(auto-fit,minmax(380px,1fr));gap:14px;padding:6px 20px}
+.panel{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:12px;min-width:0}
+.panelHead{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.stats{display:flex;flex-wrap:wrap;gap:14px;margin:8px 0;font-variant-numeric:tabular-nums}
+.stats b{font-weight:650}
+.sReach{font-size:1.08em;font-weight:650} .sMis b{color:var(--mis)} .sFact b{color:var(--fact)}
+canvas.net{width:100%;height:440px;display:block;border-radius:8px;background:var(--bg)}
+canvas.chart{width:100%;height:110px;display:block;margin-top:8px}
+.log{height:112px;overflow:auto;border-top:1px solid var(--border);margin-top:8px;padding-top:6px;font-size:13px;color:var(--muted)}
+.log div{padding:1px 0;white-space:pre-wrap} .log .mod{color:var(--mod);font-weight:600}
+.delta{padding:10px 20px;font-weight:600}
