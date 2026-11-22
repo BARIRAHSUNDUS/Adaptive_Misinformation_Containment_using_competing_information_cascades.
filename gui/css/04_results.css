@@ -1,0 +1,8 @@
+.summary,.bench{margin:6px 20px;background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:12px 14px}
+table{border-collapse:collapse;width:100%}
+th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--border);font-variant-numeric:tabular-nums}
+th{color:var(--muted);font-weight:500}
+tr.best td{background:rgba(47,158,94,.10)}
+.bar{display:inline-block;height:10px;background:var(--mis);border-radius:5px;vertical-align:middle;margin-right:8px;opacity:.8}
+.note{color:var(--muted);margin:8px 0 0}
+pre{margin:0;overflow:auto;font:12.5px/1.45 ui-monospace,Consolas,Menlo,monospace}
