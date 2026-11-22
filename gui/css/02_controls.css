@@ -1,0 +1,11 @@
+.controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:8px 20px}
+button,select{font:inherit;color:var(--text);background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:6px 12px;cursor:pointer}
+button:hover,select:hover{border-color:var(--accent)}
+button.primary{background:var(--accent);color:#fff;border-color:var(--accent);min-width:84px}
+input[type=range]{accent-color:var(--accent)}
+#tickSlider{flex:1 1 260px;min-width:160px}
+.tickLabel{font-variant-numeric:tabular-nums;min-width:92px}
+.legend{display:flex;flex-wrap:wrap;gap:16px;padding:0 20px 8px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.dot{width:12px;height:12px;border-radius:50%;display:inline-block}
+.ring{width:12px;height:12px;border-radius:50%;display:inline-block;background:transparent}
